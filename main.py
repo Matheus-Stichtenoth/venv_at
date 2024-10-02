@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 from matplotlib import pyplot as plt
 import mplsoccer
-import statsbombpy
+from statsbombpy import sb
 
 menu_lateral = ['Home',
                 'Resultados de Campeonatos', 
@@ -21,8 +21,32 @@ def color_page (color:str) -> None:
 def page_campeonatos() -> None:
     st.title('Resultados de Campeonatos 🏆')
 
+    competitions = sb.competitions()
+    competitions_names = competitions['competition_name'].unique()
+    comp = st.selectbox('Selecione a competição ⬇:',competitions_names)
+    comp_id = competitions[competitions['competition_name'] == comp]['competition_id'].values[0]
+
+    seasons = competitions[competitions['competition_id'] == comp_id]['season_name'].unique()
+    season_name = st.selectbox('Selecione a temporada ⬇:',seasons)
+    season_id = competitions[competitions['season_name'] == season_name]['season_id'].values[0]
+
 def page_partida() -> None:
     st.title('Resultados de Partidas ⚽')
+
+    competitions = sb.competitions()
+    competitions_names = competitions['competition_name'].unique()
+    comp = st.selectbox('Selecione a competição ⬇:',competitions_names)
+    comp_id = competitions[competitions['competition_name'] == comp]['competition_id'].values[0]
+
+    seasons = competitions[competitions['competition_id'] == comp_id]['season_name'].unique()
+    season_name = st.selectbox(f'Selecione a temporada da Competição {comp}:',seasons)
+    season_id = competitions[competitions['season_name'] == season_name]['season_id'].values[0]
+
+    matches = sb.matches(competition_id=comp_id,season_id = season_id)
+    def get_match_label(match_id):
+        row = matches[matches['match_id'] == match_id].iloc[0]
+        return f'{row['match_date']} - {row['home_team']} vs {row['away_team']}'
+    st.selectbox(f'Selecione uma Partida da Competição {comp} | Temporada: {season_name}',matches['match_id'],format_func = get_match_label)
 
 def page_jogador() -> None:
     st.title('Estatísticas do Jogador 👤')
@@ -37,8 +61,8 @@ def dashboard() -> None:
     elif choice == 'Estatísticas do Jogador':
         page_jogador()
     elif choice == 'Home':
-        st.write('Selecione a página que deseja visualizar ao lado.')
-        st.image('https://ogimg.infoglobo.com.br/in/22131226-2b3-906/FT1086A/760/73400662_Brazil27s-Gremio-soccer-team-celebrates-winning-the-Copa-Libertadores-championship-after.jpg')
+        st.write('Selecione a página que deseja visualizar no menu.')
+        st.image('https://static.vecteezy.com/system/resources/previews/021/629/525/non_2x/icon-a-football-player-kicking-a-ball-free-png.png')
     
 if __name__ == '__main__':
     dashboard()
