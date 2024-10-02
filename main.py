@@ -18,6 +18,9 @@ def color_page (color:str) -> None:
     </style>
     """, unsafe_allow_html=True)
 
+def image_icones (url:str, tamanho = 100) -> None:
+    st.image(url, width=tamanho)
+
 def page_campeonatos() -> None:
     st.title('Resultados de Campeonatos 🏆')
 
@@ -48,9 +51,32 @@ def page_partida() -> None:
         return f'{row['match_date']} - {row['home_team']} vs {row['away_team']}'
     game = st.selectbox(f'Selecione uma Partida da Competição {comp} | Temporada: {season_name}',matches['match_id'],format_func = get_match_label)
 
-    lc, rg = st.columns(2)
+    st.subheader(f'Competição {comp} | Temporada: {season_name}')
+
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        image_icones('https://cdn-icons-png.freepik.com/512/11818/11818132.png', tamanho = 50)
+
+    with c2:
+        arbitro = matches[matches['match_id'] == game]['referee'].values[0]
+        st.markdown(f'<h5 style = "text-align: left;">{arbitro}</h5>', unsafe_allow_html=True)
+
+    lc, rc = st.columns(2)
     with lc:
         st.write('Time da Casa')
+        image_icones('https://cdn-icons-png.flaticon.com/256/88/88961.png')
+        home_team = matches[matches['match_id'] == game]['home_team'].values[0]
+        st.subheader(home_team)
+        home_score = matches[matches['match_id'] == game]['home_score'].values[0]
+        st.metric('Gols Marcados',home_score)
+
+    with rc:
+        st.write('Time Visitante')
+        image_icones('https://cdn-icons-png.flaticon.com/256/912/912834.png')
+        away_team = matches[matches['match_id'] == game]['away_team'].values[0]
+        st.subheader(away_team)
+        away_score = matches[matches['match_id'] == game]['away_score'].values[0]
+        st.metric('Gols Marcados',away_score)
 
 def page_jogador() -> None:
     st.title('Estatísticas do Jogador 👤')
@@ -66,7 +92,6 @@ def dashboard() -> None:
         page_jogador()
     elif choice == 'Home':
         st.write('Selecione a página que deseja visualizar no menu.')
-        st.subheader('DALE GREMIO')
         st.image('https://static.vecteezy.com/system/resources/previews/021/629/525/non_2x/icon-a-football-player-kicking-a-ball-free-png.png')
 if __name__ == '__main__':
     dashboard()
