@@ -58,6 +58,8 @@ def plot_shot(match, player_name) -> None:
 
 def page_campeonatos() -> None:
     st.title('Resultados de Campeonatos 🏆')
+    st.write('A página pode ficar lenta por conta da quantidade de dados.')
+
 
     competitions = sb.competitions()
     competitions_names = competitions['competition_name'].unique()
@@ -67,6 +69,36 @@ def page_campeonatos() -> None:
     seasons = competitions[competitions['competition_id'] == comp_id]['season_name'].unique()
     season_name = st.selectbox('Selecione a temporada ⬇:',seasons)
     season_id = competitions[competitions['season_name'] == season_name]['season_id'].values[0]
+
+    matches = sb.matches(competition_id=comp_id,season_id=season_id)
+
+    total_goals = matches['home_score'].sum() + matches['away_score'].sum()
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.metric('Total de Gols no Campeonato*',total_goals)
+    
+    if season_name:
+        total_dribles = 0
+        with c2:
+            for i in range(len(matches)):
+                drible_partida = sb.events(match_id=matches['match_id'][i], split=True, flatten_attrs=False)["dribbles"]
+                qtd_dribles = drible_partida.shape[0]
+                total_dribles += qtd_dribles
+
+            st.metric('Total de Dribles no Campeonato*',total_dribles)
+    
+    with c3:
+        total_pass = 0
+        for i in range(len(matches)):
+            pass_partida = sb.events(match_id=matches['match_id'][i], split=True, flatten_attrs=False)["passes"]
+            qntd_pass = pass_partida.shape[0]
+            total_pass += qntd_pass
+
+        st.metric('Total de Dribles no Campeonato*',total_pass)
+        
+    st.write('\* Apenas para partidas coletadas no dataset.')
 
 def page_partida() -> None:
     st.title('Resultados de Partidas ⚽')
@@ -112,6 +144,28 @@ def page_partida() -> None:
         st.subheader(away_team)
         away_score = matches[matches['match_id'] == game]['away_score'].values[0]
         st.metric('Gols Marcados',away_score)
+
+    st.header('Dados da Partida')
+
+    dribles_partida = sb.events(match_id=game, split=True, flatten_attrs=False)["dribbles"]
+
+    passes_partida = sb.events(match_id=game, split=True, flatten_attrs=False)["passes"]
+
+    chutes_partida = sb.events(match_id=game, split=True, flatten_attrs=False)["shots"]
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.subheader('Chutes Realizados na Partida')
+        st.dataframe(chutes_partida.drop(columns=['id','index']))
+    
+    with c2:
+        st.subheader('Passes Realizados na Partida')
+        st.dataframe(passes_partida.drop(columns=['id','index']))
+    
+    with c3:
+        st.subheader('Dribles Realizados na Partida')
+        st.dataframe(dribles_partida.drop(columns=['id','index']))
 
 def page_jogador() -> None:
     st.title('Estatísticas do Jogador 👤')
