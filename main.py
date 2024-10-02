@@ -32,7 +32,16 @@ def plot_passes(match, player_name):
     pitch = Pitch(line_color='black', pitch_color='#799351', stripe_color='#799351', stripe=True)
     fig, ax = pitch.grid(grid_height=0.9, title_height=0.06, axis=False, endnote_height=0.04, title_space=0, endnote_space=0)
     pitch.arrows(df_pass.x, df_pass.y, df_pass.end_x, df_pass.end_y, color='white', ax=ax['pitch'])
-    pitch.kdeplot(x=df_pass.x, y=df_pass.y, ax=ax['pitch'], alpha=0.5, shade=True, cmap='plasma')
+    #pitch.kdeplot(x=df_pass.x, y=df_pass.y, ax=ax['pitch'], alpha=0.5, shade=True, cmap='plasma')
+    return fig
+
+def plot_shoot(match, player_name):
+    player_filter = (match.type_name == 'Shoot') & (match.player_name == player_name)
+    df_pass = match.loc[player_filter, ['x', 'y', 'end_x', 'end_y']]
+    pitch = Pitch(line_color='black', pitch_color='#799351', stripe_color='#799351', stripe=True)
+    fig, ax = pitch.grid(grid_height=0.9, title_height=0.06, axis=False, endnote_height=0.04, title_space=0, endnote_space=0)
+    pitch.arrows(df_pass.x, df_pass.y, df_pass.end_x, df_pass.end_y, color='white', ax=ax['pitch'])
+    #pitch.kdeplot(x=df_pass.x, y=df_pass.y, ax=ax['pitch'], alpha=0.5, shade=True, cmap='plasma')
     return fig
 
 def page_campeonatos() -> None:
@@ -107,17 +116,20 @@ def page_jogador() -> None:
     with messi:
         st.subheader('Messi')
         messi = 'Lionel Andrés Messi Cuccittini'
-        image_icones('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a0c257d-1e26-439e-8561-e67976a7a2e4/deb9rhf-a28db2f2-263b-45b2-9bbd-a7894cd6e133.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhMGMyNTdkLTFlMjYtNDM5ZS04NTYxLWU2Nzk3NmE3YTJlNFwvZGViOXJoZi1hMjhkYjJmMi0yNjNiLTQ1YjItOWJiZC1hNzg5NGNkNmUxMzMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.M-DaJ89bFpvEZNmxSDH0XxSDGXvGd_79gUIPWT45kLU')
+        image_icones('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2a0c257d-1e26-439e-8561-e67976a7a2e4/deb9rhf-a28db2f2-263b-45b2-9bbd-a7894cd6e133.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzJhMGMyNTdkLTFlMjYtNDM5ZS04NTYxLWU2Nzk3NmE3YTJlNFwvZGViOXJoZi1hMjhkYjJmMi0yNjNiLTQ1YjItOWJiZC1hNzg5NGNkNmUxMzMucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.M-DaJ89bFpvEZNmxSDH0XxSDGXvGd_79gUIPWT45kLU', tamanho = 75)
         st.write('Passes Realizados na Partida: ')
-        fig_1 = plot_passes(match=final_data,player_name=messi)
-        st.pyplot(fig_1)
+        fig_pass_1 = plot_passes(match=final_data,player_name=messi)
+        st.pyplot(fig_pass_1)
 
     with cr7:
         st.subheader('C. Ronaldo')
         cris = 'Cristiano Ronaldo dos Santos Aveiro'
         image_icones('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsNcWjopG2OzaVnw3z8Nq0k9dXMMtMBkbtnQ&s')
-        fig_2 = plot_passes(match=final_data,player_name=cris)
-        st.pyplot(fig_2)
+        st.write('Passes Realizados na Partida: ')
+        fig_pass_2 = plot_passes(match=final_data,player_name=cris)
+        st.pyplot(fig_pass_2)
+        fig_shoot_2 = plot_shoot(match=final_data,player_name=cris)
+        st.pyplot(fig_shoot_2)
 
     with mid2:
         st.html(
