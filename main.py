@@ -4,4 +4,10 @@ from matplotlib import pyplot as plt
 import mplsoccer
 import statsbombpy
 
-st.write('Olá Mundo!')
+
+def dashboard() -> None:
+    st.title('Highlights Futebol!')
+    st.header('VOCÊ SÓ ENCONTRA AQUI!!!')
+
+if __name__ == '__main__':
+    dashboard()
