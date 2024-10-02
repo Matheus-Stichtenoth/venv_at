@@ -46,7 +46,11 @@ def page_partida() -> None:
     def get_match_label(match_id):
         row = matches[matches['match_id'] == match_id].iloc[0]
         return f'{row['match_date']} - {row['home_team']} vs {row['away_team']}'
-    st.selectbox(f'Selecione uma Partida da Competição {comp} | Temporada: {season_name}',matches['match_id'],format_func = get_match_label)
+    game = st.selectbox(f'Selecione uma Partida da Competição {comp} | Temporada: {season_name}',matches['match_id'],format_func = get_match_label)
+
+    lc, rg = st.columns(2)
+    with lc:
+        st.write('Time da Casa')
 
 def page_jogador() -> None:
     st.title('Estatísticas do Jogador 👤')
@@ -62,7 +66,7 @@ def dashboard() -> None:
         page_jogador()
     elif choice == 'Home':
         st.write('Selecione a página que deseja visualizar no menu.')
+        st.subheader('DALE GREMIO')
         st.image('https://static.vecteezy.com/system/resources/previews/021/629/525/non_2x/icon-a-football-player-kicking-a-ball-free-png.png')
-    
 if __name__ == '__main__':
     dashboard()
