@@ -3,6 +3,7 @@ import streamlit as st
 from matplotlib import pyplot as plt
 from mplsoccer import Pitch, Sbopen
 from statsbombpy import sb
+import time
 
 menu_lateral = ['Home',
                 'Resultados de Campeonatos', 
@@ -153,19 +154,53 @@ def page_partida() -> None:
 
     chutes_partida = sb.events(match_id=game, split=True, flatten_attrs=False)["shots"]
 
-    c1, c2, c3 = st.columns(3)
+    chutes_c, passes_c, dribles_c = st.columns(3)
 
-    with c1:
+    with chutes_c:
         st.subheader('Chutes Realizados na Partida')
         st.dataframe(chutes_partida.drop(columns=['id','index']))
+
+        if st.checkbox('Deseja efetuar o download dos dados de chutes?'):
+            progress_bar = st.progress(0)
+            for counter in range (1,101):
+                time.sleep(0.015)
+                progress_bar.progress(counter)
+            with st.spinner('Carregando arquivo...'):
+                time.sleep(3)
+
+            st.download_button(label = 'Clique aqui para baixar os dados de chutes!',
+                            data = chutes_partida.drop(columns=['id','index']).to_csv(index=False),
+                            file_name= f'dados_chutes.csv')
     
-    with c2:
+    with passes_c:
         st.subheader('Passes Realizados na Partida')
         st.dataframe(passes_partida.drop(columns=['id','index']))
+        if st.checkbox('Deseja efetuar o download dos dados de passes?'):
+            progress_bar = st.progress(0)
+            for counter in range (1,101):
+                time.sleep(0.015)
+                progress_bar.progress(counter)
+            with st.spinner('Carregando arquivo...'):
+                time.sleep(3)
+
+            st.download_button(label = 'Clique aqui para baixar os dados de passes!',
+                            data = passes_partida.drop(columns=['id','index']).to_csv(index=False),
+                            file_name= f'dados_passes.csv')
     
-    with c3:
+    with dribles_c:
         st.subheader('Dribles Realizados na Partida')
         st.dataframe(dribles_partida.drop(columns=['id','index']))
+        if st.checkbox('Deseja efetuar o download dos dados de dribles?'):
+            progress_bar = st.progress(0)
+            for counter in range (1,101):
+                time.sleep(0.015)
+                progress_bar.progress(counter)
+            with st.spinner('Carregando arquivo...'):
+                time.sleep(3)
+
+            st.download_button(label = 'Clique aqui para baixar os dados de dribles!',
+                            data = dribles_partida.drop(columns=['id','index']).to_csv(index=False),
+                            file_name= f'dados_dribless.csv')
 
 def page_jogador() -> None:
     st.title('Estatísticas do Jogador 👤')
