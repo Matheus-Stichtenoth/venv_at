@@ -6,9 +6,9 @@ from statsbombpy import sb
 import time
 
 menu_lateral = ['Home',
-                'Resultados de Campeonatos', 
                 'Resultados de Partidas', 
-                'Estatísticas do Jogador']
+                'Estatísticas do Jogador',
+                'Resultados de Campeonatos']
 
 def color_page (color:str) -> None:
     st.markdown(f"""
