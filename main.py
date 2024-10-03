@@ -59,11 +59,11 @@ def plot_shot(match, player_name) -> None:
 
 def page_campeonatos() -> None:
     st.title('Resultados de Campeonatos 🏆')
-    st.write('A página pode ficar lenta por conta da quantidade de dados.')
+    st.write('FAVOR, AGUARDAR OS CARDS DE DRIBLES E PASSES APARECEREM PARA ALTERAR O CAMPEONATO OU TEMPORADA. OBRIGADO!')
 
 
     competitions = sb.competitions()
-    competitions_names = competitions['competition_name'].unique()
+    competitions_names = sorted(competitions['competition_name'].unique(), reverse=True)
     comp = st.selectbox('Selecione a competição ⬇:',competitions_names)
     comp_id = competitions[competitions['competition_name'] == comp]['competition_id'].values[0]
 
@@ -75,29 +75,33 @@ def page_campeonatos() -> None:
 
     total_goals = matches['home_score'].sum() + matches['away_score'].sum()
 
-    c1, c2, c3 = st.columns(3)
+    total_partidas = matches.shape[0]
+
+    c1, c2, c3, c4 = st.columns(4)
 
     with c1:
-        st.metric('Total de Gols no Campeonato*',total_goals)
-    
-    if season_name:
-        total_dribles = 0
-        with c2:
-            for i in range(len(matches)):
-                drible_partida = sb.events(match_id=matches['match_id'][i], split=True, flatten_attrs=False)["dribbles"]
-                qtd_dribles = drible_partida.shape[0]
-                total_dribles += qtd_dribles
+        st.metric('Partidas no Campeonato*', total_partidas)
 
-            st.metric('Total de Dribles no Campeonato*',total_dribles)
-    
+    with c2:
+        st.metric('Gols no Campeonato*',total_goals)
+
     with c3:
+        total_dribles = 0
+        for i in range(len(matches)):
+            drible_partida = sb.events(match_id=matches['match_id'][i], split=True, flatten_attrs=False)["dribbles"]
+            qtd_dribles = drible_partida.shape[0]
+            total_dribles += qtd_dribles
+
+        st.metric('Dribles no Campeonato*',total_dribles)
+    
+    with c4:
         total_pass = 0
         for i in range(len(matches)):
             pass_partida = sb.events(match_id=matches['match_id'][i], split=True, flatten_attrs=False)["passes"]
             qntd_pass = pass_partida.shape[0]
             total_pass += qntd_pass
 
-        st.metric('Total de Dribles no Campeonato*',total_pass)
+        st.metric('Passes no Campeonato*',total_pass)
         
     st.write('\* Apenas para partidas coletadas no dataset.')
 
